@@ -1,0 +1,70 @@
+.profile-card {
+  width: 40rem;
+  height: 20rem;
+  box-shadow: 1px 1px 4px #fff;
+  border-radius: 0.5rem;
+  display: grid;
+  place-items: center;
+  grid-template-columns: 40% 60%;
+}
+.profile-card div {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+.pic img {
+  border-radius: 1rem;
+  width: 10rem;
+  height: 13rem;
+  object-fit: cover;
+  margin-bottom: 1rem;
+}
+.details section {
+  width: 80%;
+  display: grid;
+  gap: 1rem;
+}
+.details .buttons,
+.pic button {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+}
+.buttons button,
+.pic button {
+  padding: 0.3rem 1rem;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.pic button {
+  right: unset;
+  left: 1rem;
+  bottom: 1.5rem;
+}
+
+@media screen and (max-width: 500px) {
+  .profile-card {
+    width: 20rem;
+    height: 30rem;
+    grid-template-columns: unset;
+    grid-template-rows: 40% 60%;
+  }
+  .pic img {
+    width: 13rem;
+    margin-top: 1rem;
+    margin-right: 2rem;
+  }
+  .pic button {
+    bottom: unset;
+    top: 1rem;
+    left: unset;
+    right: 1rem;
+  }
+}
