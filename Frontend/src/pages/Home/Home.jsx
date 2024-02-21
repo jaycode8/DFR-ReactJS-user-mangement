@@ -90,7 +90,7 @@ const Home = () => {
             <div className="profile-card">
                 <div className="pic">
                     <img
-                        src={`${url_api}${user.profile}`}
+                        src={`${user.pic}`}
                         alt={`${user.username}`}
                     />
                     <button

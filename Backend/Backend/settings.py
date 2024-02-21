@@ -15,6 +15,10 @@ from django.conf.global_settings import AUTH_USER_MODEL, MEDIA_ROOT, MEDIA_URL
 import os
 from dotenv import load_dotenv
 
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -140,3 +144,10 @@ AUTH_USER_MODEL = "userApp.Users"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# cloudinary configuration
+cloudinary.config(
+    cloud_name=os.getenv("CLOUD_NM"),
+    api_key=os.getenv("CLOUD_KEY"),
+    api_secret=os.getenv("CLOUD_SEC")
+)

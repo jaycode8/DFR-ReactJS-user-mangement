@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 
 from .utils.emails import transporter
+from cloudinary.uploader import destroy, upload
 
 OTP = None
 
@@ -40,7 +41,12 @@ def signUp(req):
     global OTP
     global username
     if serializer.is_valid():
-        serializer.save()
+        instance = serializer.save()
+        upload_file = req.FILES['profile']
+        result = upload(upload_file, folder="django_users")
+        img_url = result['url']
+        instance.pic = img_url
+        instance.save()
         OTP = randint(1000, 9999)
         username = serializer.data["username"]
         # transporter(serializer.data["email"], OTP)
@@ -90,12 +96,12 @@ def modifyUser(req, obj):
 
 
 def removeAccount(obj):
-    img_path = os.path.join(settings.MEDIA_ROOT, str(obj.profile))
+    img_url = obj.pic
     obj.delete()
-    try:
-        os.remove(img_path)
-    except:
-        print("no image found")
+    if img_url:
+        public_id = img_url.split('/')[-1].split('.')[0]
+        destroy(f"django_users/{public_id}")
+        print("successfully removed image")
     return Response({"message": "Account deleted", "success": "true", "status": "true"})
 
 

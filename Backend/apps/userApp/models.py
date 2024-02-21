@@ -47,7 +47,7 @@ class Users(AbstractBaseUser):
     country = models.CharField(max_length=50)
     gender = models.SmallIntegerField(choices=GENDER_CHOICES)
     password = models.CharField(max_length=200)
-    profile = models.ImageField(upload_to="images/")
+    pic = models.TextField(blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
