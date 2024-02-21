@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import './forms.css';
-import axios from 'axios';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
+import React, { useState } from "react";
+import "./forms.css";
+import axios from "axios";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+
+const url_api = import.meta.env.VITE_REACT_APP_API_URL;
 
 const Forms = () => {
     const [file, setFile] = useState(null);
@@ -18,7 +20,7 @@ const Forms = () => {
 
     const [logUser, setLogUser] = useState({
         uname: "",
-        passw: ""
+        passw: "",
     });
 
     const handleChange = ({ currentTarget: input }) => {
@@ -26,54 +28,42 @@ const Forms = () => {
     };
 
     const handlePhoneChange = (value, country) => {
-        //const formatedNumber = value.startsWith('0') ? value.substring(1) : value;
-        let formatedNumber = value.replace(/^(\d+?)(0)(\d+)$/, '$1$3');
+        let formatedNumber = value.replace(/^(\d+?)(0)(\d+)$/, "$1$3");
         setPhone(formatedNumber);
         setCountry(country.name);
     };
-    console.log(phone)
 
     const handleLogChange = ({ currentTarget: input }) => {
-        setLogUser({ ...logUser, [input.name]: input.value })
+        setLogUser({ ...logUser, [input.name]: input.value });
     };
 
     const fileChange = (event) => {
         const image = event.target.files[0];
         setFile(image);
-        document.getElementById('imgDisplay').src = URL.createObjectURL(image)
-    };
-
-    const fileChange2 = (event) => {
-        const input = document.getElementById('profile');
-        const img = document.getElementById('imgDisplay');
-        const selectedPhoto = input.files[0];
-        setFile(selectedPhoto)
-        if (selectedPhoto) {
-            console.log(file)
-            const photoUrl = URL.createObjectURL(selectedPhoto)
-            img.src = photoUrl;
-        }
+        document.getElementById("imgDisplay").src = URL.createObjectURL(image);
     };
 
     const toggleForm = () => {
-        const container = document.querySelector('.container')
-        container.classList.contains('right-panel-active') ? container.classList.remove('right-panel-active') : container.classList.add('right-panel-active');
+        const container = document.querySelector(".container");
+        container.classList.contains("right-panel-active")
+            ? container.classList.remove("right-panel-active")
+            : container.classList.add("right-panel-active");
     };
 
     const handleSignIn = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios("http://127.0.0.1:8000/signin", {
+            const res = await axios(`${url_api}/signin`, {
                 data: logUser,
-                method: "POST"
+                method: "POST",
             });
-            setResponse(res.data)
-            if (res.data.success == 'true') {
+            setResponse(res.data);
+            if (res.data.success == "true") {
                 localStorage.setItem("DRFAuthToken", res.data.token);
-                window.location.href = '/home'
+                window.location.href = "/home";
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     };
 
@@ -81,26 +71,23 @@ const Forms = () => {
         e.preventDefault();
         try {
             const formData = new FormData();
-            formData.append('username', user.username);
-            formData.append('email', user.email);
-            formData.append('password', user.password);
-            formData.append('phone', phone);
-            formData.append('country', country)
-            formData.append('gender', user.gender);
-            formData.append('profile', file);
-            formData.append('is_active', true);
-            const res = await axios("http://127.0.0.1:8000/signup", {
+            formData.append("username", user.username);
+            formData.append("email", user.email);
+            formData.append("password", user.password);
+            formData.append("phone", phone);
+            formData.append("country", country);
+            formData.append("gender", user.gender);
+            formData.append("profile", file);
+            const res = await axios(`${url_api}/signup`, {
                 method: "post",
                 data: formData,
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                }
+                    "Content-Type": "multipart/form-data",
+                },
             });
             setResponse(res.data);
-            console.log(res.data)
-            if (res.data.success == 'true') {
-                //window.location.reload(true);
-                console.log('hey')
+            if (res.data.success == "true") {
+                window.location = "/otp";
             }
         } catch (error) {
             console.log(error);
@@ -108,17 +95,17 @@ const Forms = () => {
     };
 
     return (
-        <div className='forms'>
+        <div className="forms">
             <span className={`msg ${response.success}`}>{response.message}</span>
             <div className="container right-panel-active">
                 <div className="container__form container--signup">
-                    <form action="#" className="form" id="form1" onSubmit={handleSignIn}>
+                    <form className="form" id="form1" onSubmit={handleSignIn}>
                         <h2 className="form__title">Sign In</h2>
                         <input
                             type="text"
                             placeholder="User name"
                             className="input"
-                            name='uname'
+                            name="uname"
                             onChange={handleLogChange}
                             required
                         />
@@ -126,29 +113,60 @@ const Forms = () => {
                             type="password"
                             placeholder="Password"
                             className="input"
-                            name='passw'
+                            name="passw"
                             onChange={handleLogChange}
                             required
                         />
-                        <a href="#" className="link">Forgot your password?</a>
-                        <button className="btn" type='submit'>Sign In</button>
+                        <a href="#" className="link">
+                            Forgot your password?
+                        </a>
+                        <button className="btn" type="submit">
+                            Sign In
+                        </button>
                     </form>
-                    <div className='outer_btns'>
-                        <button className="btn" id="signUp" onClick={toggleForm}>Sign Up</button>
+                    <div className="outer_btns">
+                        <button className="btn" id="signUp" onClick={toggleForm}>
+                            Sign Up
+                        </button>
                     </div>
                 </div>
 
                 <div className="container__form container--signin">
-                    <form action="#" className="form" id="form2" onSubmit={handleSignUp}>
+                    <form className="form" id="form2" onSubmit={handleSignUp}>
                         <h2 className="form__title">Sign Up</h2>
                         <div className="grid image_section">
                             <span className="grids">
                                 <img src="./avatar.jpeg" alt="avatar" id="imgDisplay" />
                             </span>
                             <label htmlFor="profile">
-                                <svg className="icon" enableBackground="new 0 0 32 32" height="32px" id="Layer_1" version="1.1" viewBox="0 0 32 32" width="1rem" xmlSpace="preserve" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+                                <svg
+                                    className="icon"
+                                    enableBackground="new 0 0 32 32"
+                                    height="32px"
+                                    id="Layer_1"
+                                    version="1.1"
+                                    viewBox="0 0 32 32"
+                                    width="1rem"
+                                    xmlSpace="preserve"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                                >
                                     <g id="camera">
-                                        <path clipRule="evenodd" d="M16,10.001c-4.419,0-8,3.581-8,8c0,4.418,3.581,8,8,8   c4.418,0,8-3.582,8-8C24,13.583,20.418,10.001,16,10.001z M20.555,21.906c-2.156,2.516-5.943,2.807-8.459,0.65   c-2.517-2.156-2.807-5.944-0.65-8.459c2.155-2.517,5.943-2.807,8.459-0.65C22.42,15.602,22.711,19.391,20.555,21.906z" fill="#333333" fillRule="evenodd" /><path clipRule="evenodd" d="M16,14.001c-2.209,0-3.999,1.791-4,3.999v0.002   c0,0.275,0.224,0.5,0.5,0.5s0.5-0.225,0.5-0.5V18c0.001-1.656,1.343-2.999,3-2.999c0.276,0,0.5-0.224,0.5-0.5   S16.276,14.001,16,14.001z" fill="#333333" fillRule="evenodd" /><path clipRule="evenodd" d="M29.492,9.042l-4.334-0.723l-1.373-3.434   C23.326,3.74,22.232,3,21,3H11C9.768,3,8.674,3.74,8.214,4.886L6.842,8.319L2.509,9.042C1.055,9.283,0,10.527,0,12v15   c0,1.654,1.346,3,3,3h26c1.654,0,3-1.346,3-3V12C32,10.527,30.945,9.283,29.492,9.042z M30,27c0,0.553-0.447,1-1,1H3   c-0.553,0-1-0.447-1-1V12c0-0.489,0.354-0.906,0.836-0.986l5.444-0.907l1.791-4.478C10.224,5.25,10.591,5,11,5h10   c0.408,0,0.775,0.249,0.928,0.629l1.791,4.478l5.445,0.907C29.646,11.094,30,11.511,30,12V27z"
+                                        <path
+                                            clipRule="evenodd"
+                                            d="M16,10.001c-4.419,0-8,3.581-8,8c0,4.418,3.581,8,8,8   c4.418,0,8-3.582,8-8C24,13.583,20.418,10.001,16,10.001z M20.555,21.906c-2.156,2.516-5.943,2.807-8.459,0.65   c-2.517-2.156-2.807-5.944-0.65-8.459c2.155-2.517,5.943-2.807,8.459-0.65C22.42,15.602,22.711,19.391,20.555,21.906z"
+                                            fill="#333333"
+                                            fillRule="evenodd"
+                                        />
+                                        <path
+                                            clipRule="evenodd"
+                                            d="M16,14.001c-2.209,0-3.999,1.791-4,3.999v0.002   c0,0.275,0.224,0.5,0.5,0.5s0.5-0.225,0.5-0.5V18c0.001-1.656,1.343-2.999,3-2.999c0.276,0,0.5-0.224,0.5-0.5   S16.276,14.001,16,14.001z"
+                                            fill="#333333"
+                                            fillRule="evenodd"
+                                        />
+                                        <path
+                                            clipRule="evenodd"
+                                            d="M29.492,9.042l-4.334-0.723l-1.373-3.434   C23.326,3.74,22.232,3,21,3H11C9.768,3,8.674,3.74,8.214,4.886L6.842,8.319L2.509,9.042C1.055,9.283,0,10.527,0,12v15   c0,1.654,1.346,3,3,3h26c1.654,0,3-1.346,3-3V12C32,10.527,30.945,9.283,29.492,9.042z M30,27c0,0.553-0.447,1-1,1H3   c-0.553,0-1-0.447-1-1V12c0-0.489,0.354-0.906,0.836-0.986l5.444-0.907l1.791-4.478C10.224,5.25,10.591,5,11,5h10   c0.408,0,0.775,0.249,0.928,0.629l1.791,4.478l5.445,0.907C29.646,11.094,30,11.511,30,12V27z"
                                             fill="#333333"
                                             fillRule="evenodd"
                                         />
@@ -166,7 +184,7 @@ const Forms = () => {
                             type="text"
                             placeholder="User Name"
                             className="input"
-                            name='username'
+                            name="username"
                             onChange={handleChange}
                             required
                         />
@@ -174,89 +192,92 @@ const Forms = () => {
                             type="email"
                             placeholder="Email"
                             className="input"
-                            name='email'
+                            name="email"
                             onChange={handleChange}
                             required
                         />
-                        {/*<input
-                            type='number'
-                            placeholder='phone number'
-                            className='input'
-                            name='phone'
-                            required
-                            onChange={handleChange}
-                        />*/}
                         <PhoneInput
-                            country={'ke'}
+                            country={"ke"}
                             value={phone}
                             inputClass="phoneInput"
-                            containerClass='phoneContainer'
+                            containerClass="phoneContainer"
                             inputStyle={{ border: 0 }}
-                            dropdownStyle={{ color: "#121212", display: "grid", placeItems: "flex-start", padding: "0 .5rem", position: "absolute" }}
+                            dropdownStyle={{
+                                color: "#121212",
+                                display: "grid",
+                                placeItems: "flex-start",
+                                padding: "0 .5rem",
+                                position: "absolute",
+                            }}
                             required
                             name="phone"
                             onChange={handlePhoneChange}
                         />
-                        <span className='gender-container'>
+                        <span className="gender-container">
                             <span>
                                 <input
-                                    type='radio'
+                                    type="radio"
                                     value={1}
-                                    name='gender'
-                                    id='male'
+                                    name="gender"
+                                    id="male"
                                     onChange={handleChange}
                                 />
-                                <label htmlFor='male'>Male</label>
+                                <label htmlFor="male">Male</label>
                             </span>
                             <span>
                                 <input
-                                    type='radio'
+                                    type="radio"
                                     value={2}
-                                    name='gender'
-                                    id='female'
+                                    name="gender"
+                                    id="female"
                                     onChange={handleChange}
                                 />
-                                <label htmlFor='female'>Female</label>
+                                <label htmlFor="female">Female</label>
                             </span>
                             <span>
                                 <input
-                                    type='radio'
+                                    type="radio"
                                     value={3}
-                                    name='gender'
-                                    id='other'
+                                    name="gender"
+                                    id="other"
                                     onChange={handleChange}
                                 />
-                                <label htmlFor='other'>other</label>
+                                <label htmlFor="other">other</label>
                             </span>
                         </span>
                         <input
                             type="password"
                             placeholder="Password"
                             className="input"
-                            name='password'
+                            name="password"
                             onChange={handleChange}
                             required
                         />
                         <button className="btn signupbtn">Sign Up</button>
                     </form>
-                    <div className='outer_btns'>
-                        <button className="btn" id="signIn" onClick={toggleForm}>Sign In</button>
+                    <div className="outer_btns">
+                        <button className="btn" id="signIn" onClick={toggleForm}>
+                            Sign In
+                        </button>
                     </div>
                 </div>
                 <div className="container__overlay">
                     <div className="overlay">
                         <div className="overlay__panel overlay--left">
-                            <button className="btn" onClick={toggleForm}>Sign Up</button>
+                            <button className="btn" onClick={toggleForm}>
+                                Sign Up
+                            </button>
                         </div>
                         <div className="overlay__panel overlay--right">
-                            <button className="btn" onClick={toggleForm}>Sign In</button>
+                            <button className="btn" onClick={toggleForm}>
+                                Sign In
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     );
-}
+};
 
 export default Forms;
