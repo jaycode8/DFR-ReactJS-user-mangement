@@ -49,8 +49,8 @@ def signUp(req):
         instance.save()
         OTP = randint(1000, 9999)
         username = serializer.data["username"]
-        # transporter(serializer.data["email"], OTP)
-        print(OTP)
+        transporter(serializer.data["email"], OTP)
+        # print(OTP)
         return Response({"message": "An OTP verification code has been sent to your email", "success": "true", "status": status.HTTP_200_OK, "OTP": OTP})
     return Response({"message": customErrorMessage({"error": serializer.errors}), "success": "false", "status": status.HTTP_400_BAD_REQUEST})
 
