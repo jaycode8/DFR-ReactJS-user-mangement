@@ -1,7 +1,7 @@
 asgiref==3.7.2
 certifi==2024.2.2
 cloudinary==1.38.0
-Django==5.0.3
+Django
 django-cors-headers==4.3.1
 djangorestframework==3.14.0
 pillow==10.2.0
